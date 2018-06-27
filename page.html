@@ -1,0 +1,759 @@
+Content Starts HereContent Starts Here
+Visualforce Page
+Member360_MC
+Help for this Page
+Page Detail
+ 
+Label	Member 360	Name	Member360_MC
+Namespace Prefix		Available for Lightning Experience, Lightning Communities, and the mobile app	Checked
+Require CSRF protection on GET requests	Not Checked	Description	Member 360 page.
+ 	Created By	Raymundo Rodriguez,  5/29/2018 3:43 PM
+Last Modified By	Hiram Perez,  6/13/2018 4:11 PM	 	 
+	
+	
+Visualforce Markup
+
+	
+	
+Version Settings
+
+
+<apex:page applyBodyTag="false" applyHtmlTag="false" lightningStylesheets="false" showChat="false" showHeader="false" showQuickActionVfHeader="false" sidebar="false" standardStylesheets="fase"
+        wizard="false" standardController="Contact" extensions="Member360Controller_MC">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <title>HCSC</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <c:FrameworkBaseComponent_CF boolCFLightningAssets="true" boolCFCharts="true" />
+            <style>
+                html, body {
+                    height: 100%;
+                    margin: 0px;    
+                }
+                
+                .fullHeight {
+                    height: 100%
+                }
+                
+                .sidebar {
+                    background-color: #0070d2;
+                    height: 100%;
+                }
+                
+                .sidebarButtonActive{
+                    background-color: #005fb2;
+                }
+                
+                .sidebarTitleBackground {
+                	background-color: #ecebea;
+                }
+                
+                .bgWhite {
+                    background-color: #FFF;
+                }
+                
+                .bgGray {
+                    background-color: #f3f2f2;
+                }
+                
+                .iconInactive {
+                    fill: #dddbda;
+                }
+                
+                .iconLarge {
+                    height: 48px;
+                }
+                
+                .inactiveSidebarText {
+                    color: #c9c7c5;
+                }
+                
+                .sidebarItemHeight {
+                    height: 40px;
+                }
+                
+                .textCenter {
+                    width: 100%;
+                }
+                .slds-gutters .slds-box.noPadding, .slds-accordion__section.noPadding {
+                    padding:0;
+                }
+                .calendarBackgroundBlue {
+                    background-color: #1589ee;
+                }
+                .textColorBlue {
+                    color: #1589ee;
+                }
+                .textColorWhite {
+                    color: #fff;
+                }
+                .textColorClear {
+                	color: #969492;
+                }
+                
+                .slds-scope .slds-border_left, .slds-scope .slds-border--left-primary {
+                    border-left: 5px solid #0070d2;
+                }
+                .slds-scope .slds-text-color_primary {
+                    color: #0070d2;
+                }
+                    
+                /*Icon colors*/
+                    
+                .slds-scope .slds-icon-text-primary {
+                    fill: #0070d2;
+                }
+                .slds-scope .slds-icon-text-primary-active {
+                    fill: #005fb2;
+                }
+                .slds-scope .slds-icon-text-primary-azure {
+                    fill: #1589ee;
+                }
+                .slds-scope .slds-icon-text-primary-alt {
+                    fill: #164a85;
+                }
+                
+                /* END Icon colors*/
+                
+                .hiddenElement {
+                	display: none;
+                }
+            </style>
+            <script>
+            	// global variables
+            	var objDefaultPieChartOptions4 = {
+                    title: {
+                        subtext: '$600 \n remaining',
+                        x: 'center',
+                        y: 'top',
+                        itemGap: 45,
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder'
+                        },
+                        subtextStyle: {
+                            color: SFDCText,
+                            fontSize: 12,
+                            fontWeight: 'bolder'
+                        },
+                    },
+                    tooltip: {
+                        show: true,
+                        formatter: "{b} : {c}"
+                    },
+                    legend: {
+                        show: false,
+                        orient: 'horizontal',
+                        x: 'center',
+                        y: 'bottom',
+                        data: [],
+                        textStyle: {
+                            fontSize: 9,
+                            color: 'transparent'
+                        },
+                    },
+                    toolbox: objSaveAsImageToolbox,
+                    calculable: false,
+                    series: [{
+                        type: 'pie',
+                        radius: ['50%', '60%'],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: false
+                                },
+                                labelLine: {
+                                    show: false
+                                }
+                            }
+                        },
+                        data:[
+                            {value: 400, name: 'Spent', itemStyle: {normal : {color:SFDCGrey}}},
+                            {value: 600, name: 'Remaining', itemStyle: {normal : {color:standardBlue}}}
+                        ],
+                    }]
+                };
+            	
+            	
+                //Document Ready.
+                $(document).ready(function() {
+                    
+                    //Timeline.
+                    $Lightning.use("HealthCloudGA:HcTimelineApp", function() {
+                        $Lightning.createComponent("HealthCloudGA:HcPatientTimeline", {
+                            patientId: "{!Contact.Id}",
+                            shownInAlohaConsole: true
+                        }, "lightningout-timeline");
+                    });
+                    
+                    createChart('#pieChart4', objDefaultPieChartOptions4);
+                });
+            	
+            	/** 
+                 * Function to display the appropriate content of the middle section according to the selected element.
+                 * @param idContent The id of the content we want to display
+                **/
+            	function displayContent(idContent) {
+                    
+                    // Weiterate through all the main elements of the middle section to search for the desired content
+                	$('#mainContent > div').each(function(){
+                    	var childContainer = $(this);
+                        
+                        // If we find the correct element, we remove the class to hide it else, we hide the hide the element if needed.
+                        if(childContainer.attr("id") === idContent ) {
+                        	childContainer.removeClass("hiddenElement");
+                        } else if(!childContainer.hasClass("childContainer")) {
+                        	childContainer.addClass("hiddenElement");
+                        }
+                    });
+                    
+                    $('#memberPickerSection > div').each(function(){
+                    	var childContainer = $(this);
+                        
+                        // If we find the correct element, we remove the class to hide it else, we hide the hide the element if needed.
+                        if(childContainer.attr("id") === idContent + "Button" ) {
+                        	childContainer.removeClass("iconInactive");
+                            childContainer.addClass("slds-icon-text-primary");
+                        } else if(childContainer.hasClass("slds-icon-text-primary")) {
+                        	childContainer.addClass("iconInactive");
+                            childContainer.removeClass("slds-icon-text-primary");
+                        }
+                    });
+                }
+            </script>
+        </head>
+        <body>
+            <!-- REQUIRED SLDS WRAPPER -->
+            <div class="slds-scope fullHeight">
+                <div class="slds-grid fullHeight">
+                    <!-- START SIDE BAR SECTION -->
+                    <div class="slds-col slds-size_2-of-12 sidebar">
+                        <div id="memberPickerSection" class="slds-grid bgWhite">
+                            <div id="salesContentButton" class="slds-col slds-size_4-of-12 slds-align_absolute-center iconLarge slds-icon-text-primary" onClick="displayContent('salesContent')">
+                                <svg aria-hidden="true" class="slds-icon-primary slds-icon_small">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#questions_and_answers')}">
+                                    </use>
+                                </svg>
+                            </div>
+                            <div id="careContentButton" class="slds-col slds-size_4-of-12 slds-align_absolute-center iconLarge iconInactive" onClick="displayContent('careContent')">
+                                <svg aria-hidden="true" class="slds-icon-primary slds-icon_small">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#feed')}">
+                                    </use>
+                                </svg>
+                            </div>
+                            <div id="medicalContentButton" class="slds-col slds-size_4-of-12 slds-align_absolute-center iconLarge iconInactive" onClick="displayContent('medicalContent')">
+                                <svg aria-hidden="true" class="slds-icon-primary slds-icon_small">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#people')}">
+                                    </use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="sidebarButtonActive slds-text-color_inverse sidebarItemHeight slds-p-left_medium slds-p-vertical_x-small">
+                            <svg aria-hidden="true" class="slds-icon-primary slds-icon_small iconInactive">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#classic_interface')}">
+                                </use>
+                            </svg>
+                            Well Being
+                        </div>
+                        <div class="inactiveSidebarText sidebarItemHeight slds-p-left_medium slds-p-vertical_x-small">
+                            <svg aria-hidden="true" class="slds-icon-primary slds-icon_small iconInactive">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#matrix')}">
+                                </use>
+                            </svg>
+                            Care Plan and Coordination
+                        </div>
+                        <div class="inactiveSidebarText sidebarItemHeight slds-p-left_medium slds-p-vertical_x-small">
+                            <svg aria-hidden="true" class="slds-icon-primary slds-icon_small iconInactive">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#people')}">
+                                </use>
+                            </svg>
+                            Care Team
+                        </div>
+                        <div class="inactiveSidebarText sidebarItemHeight slds-p-left_medium slds-p-vertical_x-small">
+                            <svg aria-hidden="true" class="slds-icon-primary slds-icon_small iconInactive">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chat')}">
+                                </use>
+                            </svg>
+                            Interaction History
+                        </div>
+                    </div>
+                    <!-- END SIDEBAR SECTION -->
+                    
+                    <!-- START MIDDLE SECTION -->
+                    <div id="mainContent" class="slds-col slds-size_8-of-12 bgGray slds-p-around_medium">
+                        <!--------------------------------------------------------- START SALES CONTENT -------------------------------------------------------> 
+                        <div id="salesContent">
+                            <!--| User section |-->
+                            <div class="slds-grid slds-p-around_small slds-border_bottom slds-m-bottom_small">
+                                <div class="slds-col slds-size_1-of-5 slds-border_right">
+                                    <span class="slds-text-heading_medium">
+                                        <strong>Chris Cooper</strong>
+                                    </span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-5 slds-p-left_xx-large">
+                                    <div class="slds-grid ">
+                                        <span>Customer Happiness Score</span>
+                                    </div>
+                                    <div class="slds-grid ">
+                                        <span class="slds-text-heading_small slds-text-color_primary">
+                                            <strong>70</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_1-of-5 slds-p-left_xx-large">
+                                    <div class="slds-grid ">
+                                        <span>Member ID</span>
+                                    </div>
+                                    <div class="slds-grid ">
+                                        <span>
+                                            <strong>982347291819</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_1-of-5 slds-p-left_xx-large">
+                                    <div class="slds-grid ">
+                                        <span>Plan Name</span>
+                                    </div>
+                                    <div class="slds-grid ">
+                                        <span>
+                                            <strong>Medicare</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_1-of-5 slds-p-left_xx-large slds-col slds-align-bottom slds-text-align_right">
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                        <a href="javascript:void(0)">See more</a>
+                                        <button class="slds-button slds-button_icon" aria-haspopup="true" title="Show More">
+                                            <svg class="slds-button__icon" aria-hidden="true">
+                                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-box bgWhite">
+                                <div class="slds-grid ">
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top-large">
+                                        <div class="slds-grid slds-m-bottom_medium">
+                                            <!-- Icon -->
+                                            <span class="slds-icon-utility-record_create" title="COMPLIANCE">
+                                                <svg aria-hidden="true" class="slds-icon-text-primary slds-icon_small">
+                                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#record_create')}">
+                                                        <span class="slds-m-left_small">COMPLIANCE</span>
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="slds-grid slds-p-right_xx-large slds-m-bottom_medium">
+                                            <!-- Progress bar -->
+                                            <div class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" role="progressbar">
+                                                <span class="slds-progress-bar__value slds-progress-bar__value_warning color-background-customer " style="width: 65%;">
+                                                    <span class="slds-assistive-text">Progress: 65%</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>Latest PCP Visit: </span>
+                                            <label> 5/25/18</label>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>4/5 Screenings Complete</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top-large">
+                                        <div class="slds-grid slds-m-bottom_medium">
+                                            <!-- Icon -->
+                                            <span class="slds-icon-utility-record_feed" title="CLINICAL">
+                                                <svg aria-hidden="true" class="slds-icon-text-primary slds-icon_small">
+                                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#feed')}">
+                                                        <span class="slds-m-left_small">CLINICAL</span>
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="slds-grid slds-p-right_xx-large slds-m-bottom_medium">
+                                            <!-- Progress bar -->
+                                            <div class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" role="progressbar">
+                                                <span class="slds-progress-bar__value slds-progress-bar__value_danger" style="width: 85%;">
+                                                    <span class="slds-assistive-text">Progress: 85%</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>At Risk Condition: </span>
+                                            <label> Asthma</label>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top-large">
+                                        <div class="slds-grid slds-m-bottom_medium">
+                                            <!-- Icon -->
+                                            <span class="slds-icon-utility-moneybag" title="FINANCIAL">
+                                                <svg aria-hidden="true" class="slds-icon-text-primary slds-icon_small">
+                                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#moneybag')}">
+                                                        <span class="slds-m-left_small">FINANCIAL</span>
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="slds-grid slds-p-right_xx-large slds-m-bottom_medium">
+                                            <!-- Progress bar -->
+                                            <div class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" role="progressbar">
+                                                <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: 20%;">
+                                                    <span class="slds-assistive-text">Progress: 20%</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>Latest PCP Visit: </span>
+                                            <label> 5/25/18</label>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>4/5 Screenings Complete</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top-large">
+                                        <div class="slds-grid slds-m-bottom_medium">
+                                            <!-- Icon -->
+                                            <span class="slds-icon-utility-user" title="PERSONAL">
+                                                <svg aria-hidden="true" class="slds-icon-text-primary slds-icon_small">
+                                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#user')}">
+                                                        <span class="slds-m-left_small">PERSONAL</span>
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="slds-grid slds-p-right_xx-large slds-m-bottom_medium">
+                                            <!-- Progress bar -->
+                                            <div class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" role="progressbar">
+                                                <span class="slds-progress-bar__value slds-progress-bar__value_warning" style="width: 75%;">
+                                                    <span class="slds-assistive-text">Progress: 75%</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>Latest PCP Visit: </span>
+                                            <label> 5/25/18</label>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <span>4/5 Screenings Complete</span>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top_small">
+                                        <a href="javascript:void(0)">View Care Plan</a>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top_small">
+                                        <a href="javascript:void(0)">View Care Plan</a>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top_small">
+                                        <a href="javascript:void(0)">View Care Plan</a>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4 slds-p-horizontal_x-large slds-m-top_small">
+                                        <a href="javascript:void(0)">View Care Plan</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                            <div class="slds-text-heading_medium textColorBlue slds-p-bottom_medium">
+                                <strong>Service Activities</strong>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <!--| Card 1 |-->
+                                <div class="slds-col slds-size_1-of-3">
+                                    <div class="slds-box noPadding bgWhite">
+                                        <!--| header |-->
+                                        <div >
+                                            <div class="slds-grid slds-border_bottom slds-border--left-primary slds-p-vertical_small">
+                                                <span class="slds-text-heading_small slds-text-color_primary slds-p-left_medium">
+                                                    <strong>CASES</strong>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!--| Body |-->
+                                        <div class="slds-p-around_small">
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-grid">
+                                                        <span>Latest Case</span>
+                                                    </div>
+                                                    <div class="slds-grid">
+                                                        <span>000000000-00</span>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-grid">
+                                                        <span>Payment Inquiery</span>
+                                                    </div>
+                                                    <div class="slds-grid">
+                                                        <span>Member Portal</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <div class="slds-grid">
+                                                        <span>Date &amp; Time</span>
+                                                    </div>
+                                                    <div class="slds-grid">
+                                                        <span>MM/DD/YYYY 03:16 PM</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <span class="slds-text-align_center label-textWhite-backgroundPrimary slds-p-around_xx-small ">10 OPEN CASES</span>
+                                                </div>
+                                            </div>
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <a href="javascript:void(0)">View Case Summary</a>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <!--| Card 2 |-->
+                                <div class="slds-col slds-size_1-of-3">
+                                    <div class="slds-box noPadding bgWhite">
+                                        <!--| header |-->
+                                        <div>
+                                            <div class="slds-grid slds-border_bottom slds-border--left-primary slds-p-vertical_small">
+                                                <span class="slds-text-heading_small slds-text-color_primary slds-p-left_medium">
+                                                    <strong>BENEFITS</strong>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!--| Body |-->
+                                        <div class="slds-p-around_small">
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-grid">
+                                                        <span class="slds-text-heading_small slds-align_absolute-center">
+                                                            <strong>OUT-OF-POCKET</strong>
+                                                        </span>
+                                                    </div>
+                                                    <!--| Dashboard |-->
+                                                    <div class="">
+                                                        <div id="pieChart4" style="height: 150px;"></div>
+                                                    </div>
+                                                    <!--| End Dashboard |-->
+                                                    <div class="slds-grid">
+                                                        <span class="slds-align_absolute-center">
+                                                            <strong>$400 spent out of $1000</strong>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-grid">
+                                                        <span class="slds-text-heading_small slds-align_absolute-center">
+                                                            <strong>DEDUCTIBLE</strong>
+                                                        </span>
+                                                    </div>
+                                                    <!--| Dashboard |-->
+                                                    <div class="slds-grid">
+                                                    </div>
+                                                    <!--| End Dashboard |-->
+                                                    <div class="slds-grid">
+                                                        <span class="slds-align_absolute-center">
+                                                            <strong>$650 spent out of $800</strong>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <!--| Card 3 |-->
+                                <div class="slds-col slds-size_1-of-3">
+                                    <div class="slds-box noPadding bgWhite">
+                                        <!--| header |-->
+                                        <div >
+                                            <div class="slds-grid slds-border_bottom slds-border--left-primary slds-p-vertical_small">
+                                                <span class="slds-text-heading_small slds-text-color_primary slds-p-left_medium">
+                                                    <strong>CLAIMS</strong>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!--| Body |-->
+                                        <div class="slds-p-around_small">
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <!--| Dashboard |-->
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-grid">
+                                                        <span class="slds-icon_container slds-icon-utility-stop">
+                                                            <svg class="slds-icon slds-icon-text-primary-alt slds-icon_x-small" aria-hidden="true">
+                                                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#stop')}"></use>
+                                                            </svg>
+                                                            <strong>2 Claims submitted</strong>
+                                                        </span>
+                                                    </div>
+                                                    <div class="slds-grid">
+                                                        <span class="slds-icon_container slds-icon-utility-stop">
+                                                            <svg class="slds-icon slds-icon-text-primary-active slds-icon_x-small" aria-hidden="true">
+                                                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#stop')}"></use>
+                                                            </svg>
+                                                            <strong>1 Claims accepted for review</strong>
+                                                        </span>
+                                                    </div>
+                                                    <div class="slds-grid">
+                                                        <span class="slds-icon_container slds-icon-utility-stop">
+                                                            <svg class="slds-icon slds-icon-text-primary slds-icon_x-small" aria-hidden="true">
+                                                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#stop')}"></use>
+                                                            </svg>
+                                                            <strong>2 Claims under review</strong>
+                                                        </span>
+                                                    </div>
+                                                    <div class="slds-grid">
+                                                        <span class="slds-icon_container slds-icon-utility-stop">
+                                                            <svg class="slds-icon slds-icon-text-primary-azure slds-icon_x-small" aria-hidden="true">
+                                                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#stop')}"></use>
+                                                            </svg>
+                                                            <strong>2 Claims approved/denied</strong>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-grid slds-m-vertical_medium">
+                                                <div class="slds-col slds-size_1-of-1 ">
+                                                    <div class="slds-grid slds-align_absolute-center">
+                                                        <span>Claim Denied: </span>
+                                                        <strong>#93920010</strong>
+                                                        <span>(Submitted:
+                                                            <strong>06/12/2017</strong>
+                                                            )
+                                                        </span>
+                                                    </div>
+                                                    <div class="slds-grid slds-m-vertical_medium">
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <span class="slds-text-align_center label-textWhite-backgroundPrimary slds-p-around_xx-small ">3 DAYS LEFT</span>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <a href="javascript:void(0)">Submit an Appeal</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <br />
+                            <br />
+                            <div>
+                                <div class="slds-text-heading_medium textColorBlue">
+                                    <strong>Member Timeline</strong>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="slds-box bgWhite">
+                                <div id="lightningout-timeline" style="width:100%; height:500px;" />
+                            </div>
+                        </div>
+                        <!--------------------------------------------------------- END SALES CONTENT --------------------------------------------------------->
+                        <!--------------------------------------------------------- START CARE CONTENT -------------------------------------------------------> 
+                        <div id="careContent" class="hiddenElement">
+                            placeholder
+                        </div>
+                        <!--------------------------------------------------------- END CARE CONTENT --------------------------------------------------------->
+                        <!--------------------------------------------------------- START MEDICAL CONTENT -------------------------------------------------------> 
+                        <div id="medicalContent" class="hiddenElement">
+                            placeholder 2
+                        </div>
+                        <!--------------------------------------------------------- END MEDICAL CONTENT --------------------------------------------------------->
+                    </div>
+                    <!-- END MIDDLE SECTION -->
+                    <!-- START RIGHT SECTION -->
+                    <div class="slds-col slds-size_2-of-12">
+                        <div class="sidebarTitleBackground slds-text-heading_small slds-p-around_medium">
+                        	Script Filter
+                        </div>
+                        <div class="slds-p-around_small bgWhite">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Search Script:</label>
+                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                    <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" aria-hidden="true">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#search')}">
+                                        </use>
+                                    </svg>
+                                    <input id="text-input-id-1" class="slds-input" placeholder="Search..." type="text" />
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                        	<ul class="slds-accordion">
+                                <li class="slds-accordion__list-item">
+                                    <section class="slds-accordion__section slds-is-open noPadding">
+                                        <div class="slds-accordion__summary sidebarTitleBackground slds-p-around_medium">
+                                            <h3 class="slds-text-heading_small slds-accordion__summary-heading">
+                                                <button aria-controls="accordion-details-01" aria-expanded="true" class="slds-button slds-button_reset slds-accordion__summary-action">
+                                                    <svg aria-hidden="true" class="slds-icon slds-icon-text-default slds-icon_x-small">
+                                                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#switch')}">
+                                                        </use>
+                                                    </svg>
+                                                    <span class="slds-truncate" title="Accordion summary">Help Scripts</span>
+                                                </button>
+                                            </h3>
+                                        </div>
+                                        <div aria-hidden="false" class="slds-accordion__content bgWhite" id="accordion-details-01">
+                                            <div class="slds-border_bottom slds-p-around_small">
+                                                <h2 class="textColorBlue">
+                                                    Having Knee Pain?
+                                                </h2>
+                                                <p class="slds-p-vertical_x-small">
+                                                    Temporary knee pain is different from chronic knee pain; many people may experience temporary knee pain as a result of an injury or accident.
+                                                    Chronic knee pain rarely goes away without treatment and isn't...
+                                                </p>
+                                                <span class="textColorClear">Health Care Article | Last Published 10/10/2017</span>
+                                            </div>
+                                            <div class="slds-border_bottom slds-p-around_small">
+                                                <h2 class="textColorBlue">
+                                                    Diabetes Article
+                                                </h2>
+                                                <p class="slds-p-vertical_x-small">
+                                                    This Article outilnes the precautions that should be taken by a diabetics patient
+                                                </p>
+                                                <span class="textColorClear">Diabetes | Last Published 12/27/2017</span>
+                                            </div>
+                                            <div class="slds-border_bottom slds-p-around_small">
+                                                <h2 class="textColorBlue">
+                                                    Prevent Care Tip
+                                                </h2>
+                                                <p class="slds-p-vertical_x-small">
+                                                    This Article outlines the preventive actions that should be taken by everyone to stay healthy
+                                                </p>
+                                                <span class="textColorClear">Health Care Article | Last Published 12/27/2016</span>
+                                            </div>
+                                            <div class="slds-border_bottom slds-p-around_small">
+                                                <h2 class="textColorBlue">
+                                                    Deductible related to Outstanding Medical Bill
+                                                </h2>
+                                                <p class="slds-p-vertical_x-small">
+                                                    Customers are responsible for providing all insurance information and establish the proper sequencing of primary and secondary
+                                                    coverage (coordination of benefits) at the time of registration. Copayments ...
+                                                </p>
+                                                <span class="textColorClear">Health Care Article | Last Published 12/27/2016</span>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END RIGHT SECTION -->
+                </div>
+            </div>
+            <!-- / REQUIRED SLDS WRAPPER -->
+        </body>
+    </html>
+</apex:page>
+                                        
+ 	 
