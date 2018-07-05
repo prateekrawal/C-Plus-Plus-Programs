@@ -27,7 +27,7 @@ int main()
 	alpha a1(36);
 	alpha a2,a3;
 	a3=a2=a1;
-	cout<<"A2";a2.display();
+	cout<<"A2 ";a2.display();
 	cout<<"A3 ";a3.display();
 	return 0;
 }
