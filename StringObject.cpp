@@ -52,6 +52,10 @@ public:
 	}
 	void operator =(String& S) //assign the string
 	{
+		if(ptr->count == 1)
+			delete ptr;//IMPORTANT THING
+		else
+			(ptr->count)--;
 		ptr=S.ptr;
 		(ptr->count)++;
 
