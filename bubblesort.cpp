@@ -17,11 +17,17 @@ int main()
 void bubblesort(int*a , int n)
 {
 	for(int i=0;i<n-1;i++)
-		for(int j=i+1;j<n;j++)
+	{
+	    for(int j=0;j<n-i+1;j++)
 		{
-			if(a[i]>a[j])
-				swap(a[i],a[j]);
-		}
+			if(a[j]>a[j+1])
+				swap(a[j],a[j+1]);
+        }
+        for(int i=0;i<n;i++)
+			cout<<a[i]<<"   ";
+			cout<<endl;
+}
+		cout<<endl;
 }
 void swap(int*a,int*b)
 {
