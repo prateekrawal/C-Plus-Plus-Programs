@@ -8,9 +8,9 @@ int main()
 	int arr1[] = { 40, 30, 20, 10 };
 	int arr2[] = { 15, 20, 25, 30, 35 };
 	for(j=0; j<4; j++)
-	list1.push_back( arr1[j] ); //list1: 40, 30, 20, 10
+		list1.push_back( arr1[j] ); //list1: 40, 30, 20, 10
 	for(j=0; j<5; j++)
-	list2.push_back( arr2[j] ); //list2: 15, 20, 25, 30, 35
+		list2.push_back( arr2[j] ); //list2: 15, 20, 25, 30, 35
 	list1.reverse(); //reverse list1: 10 20 30 40
 	list1.merge(list2); //merge list2 into list1
 	list1.unique(); //remove duplicate 20 and 30
