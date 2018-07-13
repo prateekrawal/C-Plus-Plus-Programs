@@ -24,7 +24,7 @@ int main()
 	{
 		for(int j=0;j<n2;j++)
 		{
-			if(v1[i]==v1[j])
+			if(v1[i]==v2[j])
 			{
 				v3.push_back(v1[i]);
 				i++;
