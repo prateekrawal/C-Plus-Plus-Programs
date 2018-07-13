@@ -35,8 +35,5 @@ int main()
 		}
 
 	}
-
-	cout<<"Enter the target Sum\n";
-	cin>>target;
 	return 0;
 }
