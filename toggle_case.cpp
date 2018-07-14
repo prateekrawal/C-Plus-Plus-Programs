@@ -18,6 +18,6 @@ void togglecase(char*s)
 {
 	if(*s<=96)
 		*s=*s+32;
-	else
+	else//sss
 		*s=*s-32;
 }
