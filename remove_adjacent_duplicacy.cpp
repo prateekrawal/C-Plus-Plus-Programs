@@ -10,7 +10,7 @@ void removedup(char* s)
 		int i=0;
 		while(s[i]!='\0')
 			s[i]=s[++i];
-		removedup(s);
+		removedup(s);//recursive
 	}
 	else
 		removedup(s+1);
